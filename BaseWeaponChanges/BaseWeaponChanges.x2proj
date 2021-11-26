@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>f7eb7f34-32e9-4887-b38e-4d8ebad06268</Guid>
+    <Name>BaseWeaponChanges</Name>
+    <Description>Description of My XCOM 2 Mod.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>BaseWeaponChanges</AssemblyName>
+    <RootNamespace>BaseWeaponChanges</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\BaseWeaponChanges\" />
+    <Folder Include="Src\BaseWeaponChanges\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\XComBaseWeaponChanges.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData_WeaponData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\BaseWeaponChanges.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\BaseWeaponChanges\Classes\X2Ability_TRWeaponAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\BaseWeaponChanges\Classes\X2DownloadableContentInfo_BaseWeaponChanges.uc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>
