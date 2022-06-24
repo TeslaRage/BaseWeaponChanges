@@ -8,10 +8,10 @@ static function array<X2DataTemplate> CreateTemplates()
 	local array<X2DataTemplate> Templates;
 
 	Templates.AddItem(TR_LightWeapon());
-    Templates.AddItem(TR_HeavyWeapon());
-    Templates.AddItem(TR_BurningWeapon());
-    Templates.AddItem(TR_BleedingWeapon());
-    Templates.AddItem(TR_StunningWeapon());
+	Templates.AddItem(TR_HeavyWeapon());
+	Templates.AddItem(TR_BurningWeapon());
+	Templates.AddItem(TR_BleedingWeapon());
+	Templates.AddItem(TR_StunningWeapon());
 
 	return Templates;
 }
@@ -19,11 +19,11 @@ static function array<X2DataTemplate> CreateTemplates()
 static function X2AbilityTemplate TR_LightWeapon()
 {
 	local X2AbilityTemplate Template;
-    local X2Effect_PersistentStatChange StatEffect;
+	local X2Effect_PersistentStatChange StatEffect;
 
 	Template = CreatePassiveAbility('TR_LightWeapon', "img:///UILibrary_PerkIcons.UIPerk_hunter",, false);
 
-    StatEffect = new class 'X2Effect_PersistentStatChange';
+	StatEffect = new class 'X2Effect_PersistentStatChange';
 	StatEffect.BuildPersistentEffect(1, true, false, false);
 	StatEffect.AddPersistentStatChange(eStat_Mobility, default.LightWeaponMobilityBonus);
 	Template.AddTargetEffect(StatEffect);
@@ -36,11 +36,11 @@ static function X2AbilityTemplate TR_LightWeapon()
 static function X2AbilityTemplate TR_HeavyWeapon()
 {
 	local X2AbilityTemplate Template;
-    local X2Effect_PersistentStatChange StatEffect;
+	local X2Effect_PersistentStatChange StatEffect;
 
 	Template = CreatePassiveAbility('TR_HeavyWeapon', "img:///UILibrary_PerkIcons.UIPerk_hunter",, false);
 
-    StatEffect = new class 'X2Effect_PersistentStatChange';
+	StatEffect = new class 'X2Effect_PersistentStatChange';
 	StatEffect.BuildPersistentEffect(1, true, false, false);
 	StatEffect.AddPersistentStatChange(eStat_Mobility, -default.HeavyWeaponMobilityPenalty);
 	Template.AddTargetEffect(StatEffect);

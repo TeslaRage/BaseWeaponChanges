@@ -24,157 +24,157 @@ var localized string BleedLabel;
 static event OnPostTemplatesCreated()
 {
 	PatchWeapons();
-    PatchTechs();
+	PatchTechs();
 }
 
 static function PatchWeapons()
 {
-    local X2ItemTemplateManager ItemTemplateMan;
-    local array<X2DataTemplate> DataTemplates;
-    local X2DataTemplate DataTemplate;
-    local X2WeaponTemplate WeaponTemplate;
-    local X2Effect_Burning BurningEffect;
-    local X2Effect_Persistent BleedingEffect;
-    local name TemplateName;
+	local X2ItemTemplateManager ItemTemplateMan;
+	local array<X2DataTemplate> DataTemplates;
+	local X2DataTemplate DataTemplate;
+	local X2WeaponTemplate WeaponTemplate;
+	local X2Effect_Burning BurningEffect;
+	local X2Effect_Persistent BleedingEffect;
+	local name TemplateName;
 
-    ItemTemplateMan = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
-    
-    // Light Weapon
-    foreach default.LightWeaponTemplates(TemplateName)
-    {
-        ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
+	ItemTemplateMan = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
+	
+	// Light Weapon
+	foreach default.LightWeaponTemplates(TemplateName)
+	{
+		ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
 
-        foreach DataTemplates(DataTemplate)
-        {
-            WeaponTemplate = X2WeaponTemplate(DataTemplate);
-            if (WeaponTemplate == none) continue;
+		foreach DataTemplates(DataTemplate)
+		{
+			WeaponTemplate = X2WeaponTemplate(DataTemplate);
+			if (WeaponTemplate == none) continue;
 
-            WeaponTemplate.Abilities.AddItem('TR_LightWeapon');
-            WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, class'X2Ability_TRWeaponAbilitySet'.default.LightWeaponMobilityBonus);
-        }
-    }
+			WeaponTemplate.Abilities.AddItem('TR_LightWeapon');
+			WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, class'X2Ability_TRWeaponAbilitySet'.default.LightWeaponMobilityBonus);
+		}
+	}
 
-    // Heavy Weapon
-    DataTemplates.Length = 0;
-    foreach default.HeavyWeaponTemplates(TemplateName)
-    {
-        ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
+	// Heavy Weapon
+	DataTemplates.Length = 0;
+	foreach default.HeavyWeaponTemplates(TemplateName)
+	{
+		ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
 
-        foreach DataTemplates(DataTemplate)
-        {
-            WeaponTemplate = X2WeaponTemplate(DataTemplate);
-            if (WeaponTemplate == none) continue;
+		foreach DataTemplates(DataTemplate)
+		{
+			WeaponTemplate = X2WeaponTemplate(DataTemplate);
+			if (WeaponTemplate == none) continue;
 
-            WeaponTemplate.Abilities.AddItem('TR_HeavyWeapon');
-            WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, -class'X2Ability_TRWeaponAbilitySet'.default.HeavyWeaponMobilityPenalty);
-        }
-    }
+			WeaponTemplate.Abilities.AddItem('TR_HeavyWeapon');
+			WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, -class'X2Ability_TRWeaponAbilitySet'.default.HeavyWeaponMobilityPenalty);
+		}
+	}
 
-    // Burning Weapon
-    DataTemplates.Length = 0;
-    foreach default.BurningWeaponTemplates(TemplateName)
-    {
-        ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
+	// Burning Weapon
+	DataTemplates.Length = 0;
+	foreach default.BurningWeaponTemplates(TemplateName)
+	{
+		ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
 
-        foreach DataTemplates(DataTemplate)
-        {
-            WeaponTemplate = X2WeaponTemplate(DataTemplate);
-            if (WeaponTemplate == none) continue;
+		foreach DataTemplates(DataTemplate)
+		{
+			WeaponTemplate = X2WeaponTemplate(DataTemplate);
+			if (WeaponTemplate == none) continue;
 
-            WeaponTemplate.Abilities.AddItem('TR_BurningWeapon');
-            
-            BurningEffect = class'X2StatusEffects'.static.CreateBurningStatusEffect(default.BurnDamage, 0);
-            BurningEffect.ApplyChance = default.BurnChance;
-            WeaponTemplate.BonusWeaponEffects.AddItem(BurningEffect);
-            WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.BurnChanceLabel, , default.BurnChance, , , "%");
-            WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.BurningLabel, , default.BurnDamage);
-        }
-    }
+			WeaponTemplate.Abilities.AddItem('TR_BurningWeapon');
+			
+			BurningEffect = class'X2StatusEffects'.static.CreateBurningStatusEffect(default.BurnDamage, 0);
+			BurningEffect.ApplyChance = default.BurnChance;
+			WeaponTemplate.BonusWeaponEffects.AddItem(BurningEffect);
+			WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.BurnChanceLabel, , default.BurnChance, , , "%");
+			WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.BurningLabel, , default.BurnDamage);
+		}
+	}
 
-    // Bleeding and Stunning are applied to Ripjacks and they have existing effects that need to be cleared off
-    ClearExistingEffects(default.BleedingWeaponTemplates, ItemTemplateMan);
-    ClearExistingEffects(default.StunningWeaponTemplates, ItemTemplateMan);
-    ClearExistingEffects(default.BurningWeaponTemplates, ItemTemplateMan);
+	// Bleeding and Stunning are applied to Ripjacks and they have existing effects that need to be cleared off
+	ClearExistingEffects(default.BleedingWeaponTemplates, ItemTemplateMan);
+	ClearExistingEffects(default.StunningWeaponTemplates, ItemTemplateMan);
+	ClearExistingEffects(default.BurningWeaponTemplates, ItemTemplateMan);
 
-    // Bleeding Weapon
-    DataTemplates.Length = 0;
-    foreach default.BleedingWeaponTemplates(TemplateName)
-    {
-        ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
+	// Bleeding Weapon
+	DataTemplates.Length = 0;
+	foreach default.BleedingWeaponTemplates(TemplateName)
+	{
+		ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
 
-        foreach DataTemplates(DataTemplate)
-        {
-            WeaponTemplate = X2WeaponTemplate(DataTemplate);
-            if (WeaponTemplate == none) continue;
+		foreach DataTemplates(DataTemplate)
+		{
+			WeaponTemplate = X2WeaponTemplate(DataTemplate);
+			if (WeaponTemplate == none) continue;
 
-            WeaponTemplate.Abilities.AddItem('TR_BleedingWeapon');
-            
-            BleedingEffect = class'X2StatusEffects'.static.CreateBleedingStatusEffect(default.BleedTurns, default.BleedDamage);
-            BleedingEffect.ApplyChance = default.BleedChance;
-            WeaponTemplate.BonusWeaponEffects.AddItem(BleedingEffect);
-            WeaponTemplate.SetUIStatMarkup(default.BleedChanceLabel, , default.BleedChance, , , "%");
-            WeaponTemplate.SetUIStatMarkup(default.BleedLabel, , default.BleedDamage);
-        }
-    }
+			WeaponTemplate.Abilities.AddItem('TR_BleedingWeapon');
+			
+			BleedingEffect = class'X2StatusEffects'.static.CreateBleedingStatusEffect(default.BleedTurns, default.BleedDamage);
+			BleedingEffect.ApplyChance = default.BleedChance;
+			WeaponTemplate.BonusWeaponEffects.AddItem(BleedingEffect);
+			WeaponTemplate.SetUIStatMarkup(default.BleedChanceLabel, , default.BleedChance, , , "%");
+			WeaponTemplate.SetUIStatMarkup(default.BleedLabel, , default.BleedDamage);
+		}
+	}
 
-    // Stunning Weapon
-    DataTemplates.Length = 0;
-    foreach default.StunningWeaponTemplates(TemplateName)
-    {
-        ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
+	// Stunning Weapon
+	DataTemplates.Length = 0;
+	foreach default.StunningWeaponTemplates(TemplateName)
+	{
+		ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
 
-        foreach DataTemplates(DataTemplate)
-        {
-            WeaponTemplate = X2WeaponTemplate(DataTemplate);
-            if (WeaponTemplate == none) continue;
+		foreach DataTemplates(DataTemplate)
+		{
+			WeaponTemplate = X2WeaponTemplate(DataTemplate);
+			if (WeaponTemplate == none) continue;
 
-            WeaponTemplate.Abilities.AddItem('TR_StunningWeapon');
-            
-            WeaponTemplate.BonusWeaponEffects.AddItem(class'X2StatusEffects'.static.CreateStunnedStatusEffect(1, default.Stun1Chance, false));
-		    WeaponTemplate.BonusWeaponEffects.AddItem(class'X2StatusEffects'.static.CreateStunnedStatusEffect(1, default.Stun2Chance, false));
-            WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.StunChanceLabel, , default.Stun1Chance + default.Stun2Chance, , , "%");
-        }
-    }
+			WeaponTemplate.Abilities.AddItem('TR_StunningWeapon');
+			
+			WeaponTemplate.BonusWeaponEffects.AddItem(class'X2StatusEffects'.static.CreateStunnedStatusEffect(1, default.Stun1Chance, false));
+			WeaponTemplate.BonusWeaponEffects.AddItem(class'X2StatusEffects'.static.CreateStunnedStatusEffect(1, default.Stun2Chance, false));
+			WeaponTemplate.SetUIStatMarkup(class'XLocalizedData'.default.StunChanceLabel, , default.Stun1Chance + default.Stun2Chance, , , "%");
+		}
+	}
 
-    // Chosen Sniper Rifle XCOM
-    ItemTemplateMan.FindDataTemplateAllDifficulties('ChosenSniperRifle_XCOM', DataTemplates);
+	// Chosen Sniper Rifle XCOM
+	ItemTemplateMan.FindDataTemplateAllDifficulties('ChosenSniperRifle_XCOM', DataTemplates);
 
-    foreach DataTemplates(DataTemplate)
-    {
-        WeaponTemplate = X2WeaponTemplate(DataTemplate);
-        if (WeaponTemplate == none) continue;
+	foreach DataTemplates(DataTemplate)
+	{
+		WeaponTemplate = X2WeaponTemplate(DataTemplate);
+		if (WeaponTemplate == none) continue;
 
-        WeaponTemplate.iTypicalActionCost = 2;
-    }
+		WeaponTemplate.iTypicalActionCost = 2;
+	}
 }
 
 static function ClearExistingEffects(array<name> WeaponNames, X2ItemTemplateManager ItemTemplateMan)
 {
-    local name TemplateName;
-    local array<X2DataTemplate> DataTemplates;
-    local X2DataTemplate DataTemplate;
-    local X2WeaponTemplate WeaponTemplate;
+	local name TemplateName;
+	local array<X2DataTemplate> DataTemplates;
+	local X2DataTemplate DataTemplate;
+	local X2WeaponTemplate WeaponTemplate;
 
-    foreach WeaponNames(TemplateName)
-    {
-        ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
+	foreach WeaponNames(TemplateName)
+	{
+		ItemTemplateMan.FindDataTemplateAllDifficulties(TemplateName, DataTemplates);
 
-        foreach DataTemplates(DataTemplate)
-        {
-            WeaponTemplate = X2WeaponTemplate(DataTemplate);
-            if (WeaponTemplate == none) continue;
+		foreach DataTemplates(DataTemplate)
+		{
+			WeaponTemplate = X2WeaponTemplate(DataTemplate);
+			if (WeaponTemplate == none) continue;
 
-            WeaponTemplate.BonusWeaponEffects.Length = 0;
-        }
-    }
+			WeaponTemplate.BonusWeaponEffects.Length = 0;
+		}
+	}
 }
 
 static function PatchTechs()
 {
-    local X2StrategyElementTemplateManager StratTemplateMan;
-    local array<X2DataTemplate> DataTemplates;
-    local X2DataTemplate DataTemplate;
-    local X2TechTemplate TechTemplate;
+	local X2StrategyElementTemplateManager StratTemplateMan;
+	local array<X2DataTemplate> DataTemplates;
+	local X2DataTemplate DataTemplate;
+	local X2TechTemplate TechTemplate;
 	local name TechName;
 
 	// Make breakthrough techs appear as normal techs
