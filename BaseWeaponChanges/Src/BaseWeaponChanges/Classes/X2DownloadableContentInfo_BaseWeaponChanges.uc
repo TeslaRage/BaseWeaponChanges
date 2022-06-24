@@ -15,6 +15,8 @@ var config (BaseWeaponChanges) int Stun1Chance;
 var config (BaseWeaponChanges) int Stun2Chance;
 
 var config (BaseWeaponChanges) float BreakThroughTechTimeScalar;
+var config (BaseWeaponChanges) array<name> TechsToDisable;
+var config (BaseWeaponChanges) array<name> BreakthroughsToConvert;
 
 var localized string BleedChanceLabel;
 var localized string BleedLabel;
@@ -173,29 +175,39 @@ static function PatchTechs()
     local array<X2DataTemplate> DataTemplates;
     local X2DataTemplate DataTemplate;
     local X2TechTemplate TechTemplate;
+	local name TechName;
 
-    StratTemplateMan = class'X2StrategyElementTemplateManager'.static.GetStrategyElementTemplateManager();
-    StratTemplateMan.FindDataTemplateAllDifficulties('BreakthroughBeamWeaponDamage', DataTemplates);
+	// Make breakthrough techs appear as normal techs
+	StratTemplateMan = class'X2StrategyElementTemplateManager'.static.GetStrategyElementTemplateManager();
 
-    foreach DataTemplates(DataTemplate)
-    {
-        TechTemplate = X2TechTemplate(DataTemplate);
-        if (TechTemplate == none) continue;
+	foreach default.BreakthroughsToConvert(TechName)
+	{
+		StratTemplateMan.FindDataTemplateAllDifficulties(TechName, DataTemplates);
 
-        TechTemplate.PointsToComplete *= default.BreakThroughTechTimeScalar;
-        TechTemplate.bBreakthrough = false;        
-    }
+		foreach DataTemplates(DataTemplate)
+		{
+			TechTemplate = X2TechTemplate(DataTemplate);
+			if (TechTemplate == none) continue;
 
-    DataTemplates.Length = 0;
-    StratTemplateMan.FindDataTemplateAllDifficulties('BreakthroughMagneticWeaponDamage', DataTemplates);
+			TechTemplate.PointsToComplete *= default.BreakThroughTechTimeScalar;
+			TechTemplate.bBreakthrough = false;
+		}
+	}
 
-    foreach DataTemplates(DataTemplate)
-    {
-        TechTemplate = X2TechTemplate(DataTemplate);
-        if (TechTemplate == none) continue;
-
-        TechTemplate.PointsToComplete *= default.BreakThroughTechTimeScalar;
-        TechTemplate.bBreakthrough = false;        
-    }
-
+	// Took this from Weapon and Item Overhaul
+	// Set unobtainable requirements for all weapon damage breakthroughs
+	foreach default.TechsToDisable(TechName)
+	{
+		StratTemplateMan.FindDataTemplateAllDifficulties(TechName, DataTemplates);
+		foreach DataTemplates(DataTemplate)
+		{
+			TechTemplate = X2TechTemplate(DataTemplate);
+			if (TechTemplate != none)
+			{
+				TechTemplate.Requirements.RequiredEngineeringScore = 99999;
+				TechTemplate.Requirements.RequiredScienceScore = 99999;
+				TechTemplate.Requirements.bVisibleIfPersonnelGatesNotMet = false;
+			}
+		}
+	}
 }
